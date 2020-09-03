@@ -9,17 +9,29 @@
 	"categories": [
 		"Other"
 	],
-	"activationEvents": [
-		"onCommand:ns-discount.helloWorld"
-	],
 	"main": "./out/extension.js",
+	"activationEvents": [
+		"onView:nsDiscount" 
+	],
 	"contributes": {
-		"commands": [
-			{
-				"command": "ns-discount.helloWorld",
-				"title": "Hello World"
-			}
-		]
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "ns-discount",
+					"title": "NS Discount",
+					"icon": "media/ns.svg"
+				}
+			]
+		},
+		"views": {
+			"ns-discount": [
+				{
+					"id": "nsDiscount",
+					"name": "NS Discount",
+					"icon": "media/ns.svg"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
