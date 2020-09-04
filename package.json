@@ -11,9 +11,13 @@
 	],
 	"main": "./out/extension.js",
 	"activationEvents": [
-		"onView:nsDiscount" 
+		"onView:nsDiscount"
 	],
 	"contributes": {
+		"commands": [{
+			"command": "nsDiscount.featured.more",
+			"title": "查看更多折扣"
+		}],
 		"viewsContainers": {
 			"activitybar": [
 				{
@@ -53,5 +57,8 @@
 		"mocha": "^8.0.1",
 		"typescript": "^3.8.3",
 		"vscode-test": "^1.4.0"
+	},
+	"dependencies": {
+		"axios": "^0.20.0"
 	}
 }
