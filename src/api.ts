@@ -1,8 +1,5 @@
 import Axios from 'axios'
-import { GameItem } from './game-item'
-import { off } from 'process'
-import { TreeItemCollapsibleState, TreeItem, QuickPickItem } from 'vscode'
-import { SearchItem } from './search-item'
+import { IGame, IPrice } from './model'
 
 const MP_SCENE = 1001
 
@@ -22,8 +19,8 @@ type JUMP_RESULT_STRC = {
  * 获取推荐折扣游戏
  * @param offset 
  */
-export function getFeaturedDiscountList(offset: number = 0): Promise<TreeItem[]>{
-  return new Promise<TreeItem[]>(async (resolve, reject)=>{
+export function getFeaturedDiscountList(offset: number = 0): Promise<IGame[]>{
+  return new Promise<IGame[]>(async (resolve, reject)=>{
     try {
       const payload = {
         ifDiscount:true,
@@ -45,12 +42,12 @@ export function getFeaturedDiscountList(offset: number = 0): Promise<TreeItem[]>
 
       const {games} = resp.data
 
-      const uiGameList = new Array<TreeItem>()
-      games.forEach((game:any) => {
-        uiGameList.push(new GameItem(game.titleZh,TreeItemCollapsibleState.Collapsed,game))
-      })
+      // const uiGameList = new Array<TreeItem>()
+      // games.forEach((game:any) => {
+      //   uiGameList.push(new GameItem(game.titleZh,TreeItemCollapsibleState.Collapsed,game))
+      // })
 
-      resolve(uiGameList)
+      resolve(games)
     } catch (error) {
       console.error(error)
       reject(error)
@@ -63,24 +60,24 @@ export function getFeaturedDiscountList(offset: number = 0): Promise<TreeItem[]>
  * 获取游戏详情
  * @param appid 游戏id 
  */
-export function getGameDetail(appid: string): Promise<TreeItem[]>{
-  return new Promise<TreeItem[]>(async (resolve,reject)=>{
+export function getGameDetail(appid: string): Promise<{game:IGame, prices: Array<IPrice>}>{
+  return new Promise<{game:IGame, prices: Array<IPrice>}>(async (resolve,reject)=>{
     try {
       const resp = (await axios.get<JUMP_RESULT_STRC>(`/switch/gameInfo?appid=${appid}`)).data
       handleError(resp)
       const {game,prices} = resp.data
 
-      const displayDetail = new Array<TreeItem>()
-      displayDetail.push(new TreeItem(`介绍 - ${game.detail}`, TreeItemCollapsibleState.None))
-      displayDetail.push(new TreeItem(`中文 - ${game.chineseVer == 1?'是': '否'}`, TreeItemCollapsibleState.None))
-      displayDetail.push(new TreeItem(`折扣截止 - ${game.leftDiscount}`, TreeItemCollapsibleState.None))
-      displayDetail.push(new TreeItem(`价格表`, TreeItemCollapsibleState.None))
+      // const displayDetail = new Array<TreeItem>()
+      // displayDetail.push(new TreeItem(`介绍 - ${game.detail}`, TreeItemCollapsibleState.None))
+      // displayDetail.push(new TreeItem(`中文 - ${game.chineseVer == 1?'是': '否'}`, TreeItemCollapsibleState.None))
+      // displayDetail.push(new TreeItem(`折扣截止 - ${game.leftDiscount}`, TreeItemCollapsibleState.None))
+      // displayDetail.push(new TreeItem(`价格表`, TreeItemCollapsibleState.None))
       
-      prices.forEach((price:any) => {
-        displayDetail.push(new TreeItem(` |-${price.country} - ${price.price}RMB`))
-      })
+      // prices.forEach((price:any) => {
+      //   displayDetail.push(new TreeItem(` |-${price.country} - ${price.price}RMB`))
+      // })
 
-      resolve(displayDetail)
+      resolve({game,prices})
     } catch (error) {
       
       console.error(error)
@@ -93,25 +90,25 @@ export function getGameDetail(appid: string): Promise<TreeItem[]>{
  * 搜索游戏
  * @param keyword 
  */
-export function searchGame(keyword: string): Promise<Array<SearchItem>>{
-  return new Promise<any>(async (resolve, reject)=> {
+export function searchGame(keyword: string): Promise<Array<IGame>>{
+  return new Promise<Array<IGame>>(async (resolve, reject)=> {
     try {
       console.log(`搜索：${keyword}`)
       const resp = (await axios.get<JUMP_RESULT_STRC>(`/switch/gameDlc/list?title=${encodeURIComponent(keyword)}&offset=0&limit=10`)).data
       handleError(resp)
 
       const {games} = resp.data
-      const gameSelector = new Array<SearchItem>()
+      // const gameSelector = new Array<SearchItem>()
 
-      games.forEach((game:any) => {
-        gameSelector.push({
-          label: game.titleZh,
-          description: game.title,
-          game
-        })
-      })
+      // games.forEach((game:any) => {
+      //   gameSelector.push({
+      //     label: game.titleZh,
+      //     description: game.title,
+      //     game
+      //   })
+      // })
 
-      resolve(gameSelector)
+      resolve(games)
     } catch (error) {
       console.error(error)
       reject(error)

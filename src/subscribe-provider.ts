@@ -8,6 +8,8 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { IGame } from "./model";
+import { GameItem } from "./game-item";
+import { getGameDetail } from "./api";
 
 const WISH_GAME_LIST_KEY = 'WISH_GAME_LIST'
 
@@ -20,6 +22,7 @@ export class SubscribeProvider implements TreeDataProvider<TreeItem> {
 
   constructor(private workspaceRoot: string | undefined, private context: ExtensionContext) {
     this.wishGameList = context.globalState.get(WISH_GAME_LIST_KEY, new Array<IGame>())
+    console.log(`当前关注`, this.wishGameList)
   }
 
   addWishGame(game: IGame){
@@ -42,11 +45,22 @@ export class SubscribeProvider implements TreeDataProvider<TreeItem> {
   getTreeItem(element: TreeItem): TreeItem | Thenable<TreeItem> {
     return element;
   }
-  getChildren(element?: TreeItem): ProviderResult<TreeItem[] > {
-    return new Promise<TreeItem[]>(async (resolve) => {
-      resolve(this.wishGameList.map((game)=>{
-        return new TreeItem(game.titleZh,TreeItemCollapsibleState.None)
-      }))
+  getChildren(element?: GameItem): ProviderResult<GameItem[] | TreeItem[]> {
+    return new Promise<GameItem[] | TreeItem[]>(async (resolve) => {
+      try {
+        if(element){
+          // 获取详情
+          const { game, prices } = await getGameDetail(element.id);
+
+          resolve(GameItem.buildTreeDetailWithGameInfo(game, prices));
+
+        }else {
+          resolve(GameItem.buildTreeListWithGameList(this.wishGameList))
+        }
+      } catch (error) {
+        console.error(error)
+        resolve([])
+      }
     });
   }
 

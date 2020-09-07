@@ -8,24 +8,28 @@ import {
 } from "vscode";
 import { GameItem } from "./game-item";
 import { getFeaturedDiscountList, getGameDetail } from "./api";
+import { IGame, IPrice } from "./model";
 
 export class FeaturedProvider implements TreeDataProvider<TreeItem> {
-
-  gameDiscount:Array<GameItem | TreeItem> = new Array()
-  disCountListOffset:number = 0
+  gameDiscount: Array<GameItem | TreeItem> = new Array();
+  disCountListOffset: number = 0;
   // tree数据改变事件
-  private _onDidChangeTreeData: EventEmitter < TreeItem | undefined > =new EventEmitter < TreeItem | undefined > ()
-  readonly onDidChangeTreeData: Event < TreeItem | undefined > =this._onDidChangeTreeData.event
+  private _onDidChangeTreeData: EventEmitter<
+    TreeItem | undefined
+  > = new EventEmitter<TreeItem | undefined>();
+  readonly onDidChangeTreeData: Event<TreeItem | undefined> = this
+    ._onDidChangeTreeData.event;
 
   constructor(private workspaceRoot: string | undefined) {
-    this.setupDiscountList()
+    this.setupDiscountList();
   }
 
-  async setupDiscountList(){
-    const list = await getFeaturedDiscountList()
-    this.gameDiscount = this.gameDiscount.concat(list)
-    this.disCountListOffset = this.gameDiscount.length
-    this.refresh()
+  async setupDiscountList() {
+    const games = await getFeaturedDiscountList();
+
+    this.gameDiscount = this.gameDiscount.concat(GameItem.buildTreeListWithGameList(games));
+    this.disCountListOffset = this.gameDiscount.length;
+    this.refresh();
   }
 
   getTreeItem(element: GameItem): TreeItem | Thenable<TreeItem> {
@@ -34,16 +38,17 @@ export class FeaturedProvider implements TreeDataProvider<TreeItem> {
   getChildren(element?: GameItem): ProviderResult<GameItem[] | TreeItem[]> {
     return new Promise<GameItem[] | TreeItem[]>(async (resolve) => {
       try {
-        if(element){
+        if (element) {
           // 获取详情
-          const detail = await getGameDetail(element.id)
-          resolve(detail)
-        }else {
-          if (this.gameDiscount.length >0) {
+          const { game, prices } = await getGameDetail(element.id);
+
+          resolve(GameItem.buildTreeDetailWithGameInfo(game, prices));
+        } else {
+          if (this.gameDiscount.length > 0) {
             // 获取列表
-            resolve(this.gameDiscount.concat(this.getMoreTreeItem()))
-          }else {
-            resolve([new TreeItem(`加载中，请稍后`)])
+            resolve(this.gameDiscount.concat(this.getMoreTreeItem()));
+          } else {
+            resolve([new TreeItem(`加载中，请稍后`)]);
           }
         }
       } catch (error) {
@@ -52,28 +57,30 @@ export class FeaturedProvider implements TreeDataProvider<TreeItem> {
     });
   }
 
-  getMoreTreeItem():TreeItem{
-    const more = new TreeItem(`查看更多`,TreeItemCollapsibleState.None)
+  getMoreTreeItem(): TreeItem {
+    const more = new TreeItem(`查看更多`, TreeItemCollapsibleState.None);
     more.command = {
       title: `查看更多`,
-      command: `nsDiscount.featured.more`
-    }
-    return more
+      command: `nsDiscount.featured.more`,
+    };
+    return more;
   }
 
-  loadMoreFeaturedListAction(){
-    console.log(`更多`)
-    this.loadMoreFeaturedList()
+  loadMoreFeaturedListAction() {
+    console.log(`更多`);
+    this.loadMoreFeaturedList();
   }
 
-  async loadMoreFeaturedList(){
-    const list = await getFeaturedDiscountList(this.disCountListOffset)
-    this.gameDiscount = this.gameDiscount.concat(list)
-    this.disCountListOffset = this.gameDiscount.length
-    this.refresh()
+  async loadMoreFeaturedList() {
+    const games = await getFeaturedDiscountList(this.disCountListOffset);
+    this.gameDiscount = this.gameDiscount.concat(GameItem.buildTreeListWithGameList(games));
+    this.disCountListOffset = this.gameDiscount.length;
+    this.refresh();
   }
 
   refresh() {
     this._onDidChangeTreeData.fire(undefined);
   }
+
+  
 }
