@@ -60,9 +60,14 @@ export function activate(context: vscode.ExtensionContext) {
       subscribeProvider.removeWishGame(gameItem.game.appid)
     })
 
+    const rereshWishGame = vscode.commands.registerCommand('nsDiscount.subscribe.refresh', ()=>{
+      subscribeProvider.refreshWishGames()
+    })
+
     context.subscriptions.push(featuredMore);
     context.subscriptions.push(addWishGame);
     context.subscriptions.push(removeWishGame)
+    context.subscriptions.push(rereshWishGame)
   } catch (error) {
 		console.error(error)
 	}

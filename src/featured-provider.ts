@@ -8,7 +8,6 @@ import {
 } from "vscode";
 import { GameItem } from "./game-item";
 import { getFeaturedDiscountList, getGameDetail } from "./api";
-import { IGame, IPrice } from "./model";
 
 export class FeaturedProvider implements TreeDataProvider<TreeItem> {
   gameDiscount: Array<GameItem | TreeItem> = new Array();
@@ -26,10 +25,10 @@ export class FeaturedProvider implements TreeDataProvider<TreeItem> {
 
   async setupDiscountList() {
     const games = await getFeaturedDiscountList();
-
     this.gameDiscount = this.gameDiscount.concat(GameItem.buildTreeListWithGameList(games));
     this.disCountListOffset = this.gameDiscount.length;
     this.refresh();
+    this.loadMoreFeaturedList()
   }
 
   getTreeItem(element: GameItem): TreeItem | Thenable<TreeItem> {
@@ -67,7 +66,6 @@ export class FeaturedProvider implements TreeDataProvider<TreeItem> {
   }
 
   loadMoreFeaturedListAction() {
-    console.log(`更多`);
     this.loadMoreFeaturedList();
   }
 

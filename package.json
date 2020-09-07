@@ -2,6 +2,7 @@
   "name": "ns-discount",
   "displayName": "ns-discount",
   "description": "",
+  "publisher": "PatrickSR",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.48.0"
@@ -23,8 +24,12 @@
       {
         "command": "nsDiscount.subscribe.add",
         "title": "添加关注的游戏",
-				"icon": "media/add.svg",
-				"category": "nsDiscount"
+				"icon": "media/add.svg"
+			},
+      {
+        "command": "nsDiscount.subscribe.refresh",
+        "title": "刷新关注的游戏",
+				"icon": "media/refresh.svg"
 			},
 			{
 				"command": "nsDiscount.subscribe.remove",
@@ -35,7 +40,7 @@
       "activitybar": [
         {
           "id": "ns-discount",
-          "title": "NS Discount",
+          "title": "Switc游戏折扣",
           "icon": "media/ns.svg"
         }
       ]
@@ -48,7 +53,7 @@
         },
         {
           "id": "subscribe",
-          "name": "我的订阅"
+          "name": "我的关注"
         }
       ]
     },
@@ -56,6 +61,11 @@
       "view/title": [
         {
 					"command": "nsDiscount.subscribe.add",
+					"when": "view == subscribe",
+					"group": "navigation"
+				},
+        {
+					"command": "nsDiscount.subscribe.refresh",
 					"when": "view == subscribe",
 					"group": "navigation"
 				}

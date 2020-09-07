@@ -22,7 +22,9 @@ export class SubscribeProvider implements TreeDataProvider<TreeItem> {
 
   constructor(private workspaceRoot: string | undefined, private context: ExtensionContext) {
     this.wishGameList = context.globalState.get(WISH_GAME_LIST_KEY, new Array<IGame>())
-    console.log(`当前关注`, this.wishGameList)
+    setTimeout(() => {
+      this.refreshWishGames()
+    }, 0)
   }
 
   addWishGame(game: IGame){
@@ -37,6 +39,18 @@ export class SubscribeProvider implements TreeDataProvider<TreeItem> {
     this.syncGlobalState()
     this.refresh()
   }
+
+  async refreshWishGames(){
+    for (let index = 0; index < this.wishGameList.length; index++) {
+      const gameEntity = this.wishGameList[index];
+      const {game} = await getGameDetail(gameEntity.appid)
+      this.wishGameList[index] = Object.assign({}, gameEntity, game)
+    }
+
+    this.syncGlobalState()
+    this.refresh()
+  }
+
 
   syncGlobalState(){
     this.context.globalState.update(WISH_GAME_LIST_KEY,this.wishGameList)
