@@ -1,9 +1,9 @@
 {
   "name": "ns-discount",
   "displayName": "ns-discount",
-  "description": "",
+  "description": "vscode 插件，查询Nintendo switch的游戏折扣",
   "publisher": "PatrickSR",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.48.0"
   },
