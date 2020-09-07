@@ -5,6 +5,8 @@ import { FeaturedProvider } from "./featured-provider";
 import { SubscribeProvider } from "./subscribe-provider";
 import { searchGame } from "./api";
 import { SearchItem, buildQuickPickListWithSearch } from "./search-item";
+import { IGame } from "./model";
+import { GameItem } from "./game-item";
 
 let searchTimeout: NodeJS.Timeout | undefined = undefined;
 
@@ -52,10 +54,15 @@ export function activate(context: vscode.ExtensionContext) {
         input.show();
         // console.log(res)
       }
-    );
+    )
+
+    const removeWishGame = vscode.commands.registerCommand('nsDiscount.subscribe.remove', (gameItem:GameItem)=> {
+      subscribeProvider.removeWishGame(gameItem.game.appid)
+    })
 
     context.subscriptions.push(featuredMore);
     context.subscriptions.push(addWishGame);
+    context.subscriptions.push(removeWishGame)
   } catch (error) {
 		console.error(error)
 	}
