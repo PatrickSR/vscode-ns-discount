@@ -1,7 +1,8 @@
 import Axios from 'axios'
 import { GameItem } from './game-item'
 import { off } from 'process'
-import { TreeItemCollapsibleState, TreeItem } from 'vscode'
+import { TreeItemCollapsibleState, TreeItem, QuickPickItem } from 'vscode'
+import { SearchItem } from './search-item'
 
 const MP_SCENE = 1001
 
@@ -17,7 +18,10 @@ type JUMP_RESULT_STRC = {
 }
 
 
-
+/**
+ * 获取推荐折扣游戏
+ * @param offset 
+ */
 export function getFeaturedDiscountList(offset: number = 0): Promise<TreeItem[]>{
   return new Promise<TreeItem[]>(async (resolve, reject)=>{
     try {
@@ -56,8 +60,8 @@ export function getFeaturedDiscountList(offset: number = 0): Promise<TreeItem[]>
 }
 
 /**
- * 游戏id
- * @param appid 
+ * 获取游戏详情
+ * @param appid 游戏id 
  */
 export function getGameDetail(appid: string): Promise<TreeItem[]>{
   return new Promise<TreeItem[]>(async (resolve,reject)=>{
@@ -79,6 +83,36 @@ export function getGameDetail(appid: string): Promise<TreeItem[]>{
       resolve(displayDetail)
     } catch (error) {
       
+      console.error(error)
+      reject(error)
+    }
+  })
+}
+
+/**
+ * 搜索游戏
+ * @param keyword 
+ */
+export function searchGame(keyword: string): Promise<Array<SearchItem>>{
+  return new Promise<any>(async (resolve, reject)=> {
+    try {
+      console.log(`搜索：${keyword}`)
+      const resp = (await axios.get<JUMP_RESULT_STRC>(`/switch/gameDlc/list?title=${encodeURIComponent(keyword)}&offset=0&limit=10`)).data
+      handleError(resp)
+
+      const {games} = resp.data
+      const gameSelector = new Array<SearchItem>()
+
+      games.forEach((game:any) => {
+        gameSelector.push({
+          label: game.titleZh,
+          description: game.title,
+          game
+        })
+      })
+
+      resolve(gameSelector)
+    } catch (error) {
       console.error(error)
       reject(error)
     }

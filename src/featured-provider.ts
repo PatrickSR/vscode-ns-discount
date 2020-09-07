@@ -9,7 +9,7 @@ import {
 import { GameItem } from "./game-item";
 import { getFeaturedDiscountList, getGameDetail } from "./api";
 
-export class NsDiscountProvider implements TreeDataProvider<TreeItem> {
+export class FeaturedProvider implements TreeDataProvider<TreeItem> {
 
   gameDiscount:Array<GameItem | TreeItem> = new Array()
   disCountListOffset:number = 0

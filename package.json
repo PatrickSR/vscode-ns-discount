@@ -11,12 +11,17 @@
 	],
 	"main": "./out/extension.js",
 	"activationEvents": [
-		"onView:nsDiscount"
+		"onView:featured",
+		"onView:subscribe",
+		"onCommand:nsDiscount.subscribe.add"
 	],
 	"contributes": {
 		"commands": [{
 			"command": "nsDiscount.featured.more",
 			"title": "查看更多折扣"
+		}, {
+			"command": "nsDiscount.subscribe.add",
+			"title": "添加关注的游戏"
 		}],
 		"viewsContainers": {
 			"activitybar": [
@@ -30,9 +35,12 @@
 		"views": {
 			"ns-discount": [
 				{
-					"id": "nsDiscount",
-					"name": "NS Discount",
-					"icon": "media/ns.svg"
+					"id": "featured",
+					"name": "折扣推荐"
+				},
+				{
+					"id": "subscribe",
+					"name": "我的订阅"
 				}
 			]
 		}
