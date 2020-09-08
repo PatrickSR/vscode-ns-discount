@@ -21,7 +21,7 @@ export class GameItem extends TreeItem {
 		}
 
 
-		return `${this.game.title? this.game.title : this.game.titleZh} ${zhDiscount && `【${zhDiscount}折】`}`
+		return `${this.game.title? this.game.title : this.game.titleZh} ${zhDiscount ?`【${zhDiscount}折】`:''}`
 	}
 
   get tooltip(): string {

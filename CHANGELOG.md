@@ -1,9 +1,18 @@
 # Change Log
 
-All notable changes to the "ns-discount" extension will be documented in this file.
+## 0.1.3
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+⭐️ 增加manifest 的keywords
 
-## [Unreleased]
+## 0.1.2
+🐛 修复没有折扣的游戏显示undefined
 
-- Initial release
+## 0.1.1
+
+🎨 增加插件logo
+
+## 0.1.0
+
+⭐️ 随时查询最新switch游戏
+
+⭐️ 添加关注的游戏，随手查询折扣情况
