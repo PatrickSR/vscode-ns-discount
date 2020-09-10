@@ -42,3 +42,15 @@ export interface IPrice {
   // 当前价格
   price: string
 }
+
+export interface INews {
+  id: number
+  time: string
+  title: {
+    rendered: string
+  }
+  content?: {
+    rendered: string
+  },
+  link: string
+}

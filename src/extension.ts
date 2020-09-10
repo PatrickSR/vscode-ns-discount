@@ -5,8 +5,9 @@ import { FeaturedProvider } from "./featured-provider";
 import { SubscribeProvider } from "./subscribe-provider";
 import { searchGame } from "./api";
 import { SearchItem, buildQuickPickListWithSearch } from "./search-item";
-import { IGame } from "./model";
 import { GameItem } from "./game-item";
+import { NEWS_SCHEME, NewsDetailProvider, NewsProvider } from "./news-provider";
+import { COMMAND } from "./command";
 
 let searchTimeout: NodeJS.Timeout | undefined = undefined;
 
@@ -16,20 +17,43 @@ export function activate(context: vscode.ExtensionContext) {
     const subscribeProvider = new SubscribeProvider(
       vscode.workspace.rootPath,
       context
-    );
+    )
+
+    const newsProvider = new NewsProvider(vscode.workspace.rootPath, context)
 
     vscode.window.registerTreeDataProvider("featured", featuredProvider);
     vscode.window.registerTreeDataProvider("subscribe", subscribeProvider);
+    vscode.window.registerTreeDataProvider("ns-news",newsProvider)
 
+
+    vscode.workspace.registerTextDocumentContentProvider(
+      NEWS_SCHEME,
+      new NewsDetailProvider()
+    );
+
+    const previewNews = vscode.commands.registerCommand(
+      COMMAND.NEWS_SHOW,
+      async (newsId) => {
+        let uri = vscode.Uri.parse(`${NEWS_SCHEME}:${newsId}.ts`);
+
+        let doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+        await vscode.window.showTextDocument(doc, { preview: false,  });
+      }
+    );
+
+    context.subscriptions.push(previewNews);
+
+    // 加载更多折扣游戏
     const featuredMore = vscode.commands.registerCommand(
-      "nsDiscount.featured.more",
+      COMMAND.FEATURED_MORE,
       () => {
         featuredProvider.loadMoreFeaturedListAction();
       }
     );
 
+    // 添加关注的游戏
     const addWishGame = vscode.commands.registerCommand(
-      "nsDiscount.subscribe.add",
+      COMMAND.SUBSCRIBE_ADD,
       async () => {
         const input = vscode.window.createQuickPick<SearchItem>();
         input.placeholder = `请输入想关注的游戏`;
@@ -54,23 +78,31 @@ export function activate(context: vscode.ExtensionContext) {
         input.show();
         // console.log(res)
       }
-    )
+    );
 
-    const removeWishGame = vscode.commands.registerCommand('nsDiscount.subscribe.remove', (gameItem:GameItem)=> {
-      subscribeProvider.removeWishGame(gameItem.game.appid)
-    })
+    // 移除关注的游戏
+    const removeWishGame = vscode.commands.registerCommand(
+      COMMAND.SUBSCRIBE_REMOVE,
+      (gameItem: GameItem) => {
+        subscribeProvider.removeWishGame(gameItem.game.appid);
+      }
+    );
 
-    const rereshWishGame = vscode.commands.registerCommand('nsDiscount.subscribe.refresh', ()=>{
-      subscribeProvider.refreshWishGames()
-    })
+    // 刷新关注的游戏
+    const rereshWishGame = vscode.commands.registerCommand(
+      COMMAND.SUBSCRIBE_REFRESH,
+      () => {
+        subscribeProvider.refreshWishGames();
+      }
+    );
 
     context.subscriptions.push(featuredMore);
     context.subscriptions.push(addWishGame);
-    context.subscriptions.push(removeWishGame)
-    context.subscriptions.push(rereshWishGame)
+    context.subscriptions.push(removeWishGame);
+    context.subscriptions.push(rereshWishGame);
   } catch (error) {
-		console.error(error)
-	}
+    console.error(error);
+  }
 }
 
 export function deactivate() {}

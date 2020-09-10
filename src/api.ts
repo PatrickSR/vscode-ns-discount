@@ -1,10 +1,14 @@
 import Axios from 'axios'
-import { IGame, IPrice } from './model'
+import { IGame, IPrice, INews } from './model'
 
 const MP_SCENE = 1001
 
-const axios = Axios.create({
+const jumpAxios = Axios.create({
   baseURL: `https://switch.jumpvg.com`,
+})
+
+const newsAxios = Axios.create({
+  baseURL: 'https://www.ninten.cn'
 })
 
 type JUMP_RESULT_STRC = {
@@ -13,6 +17,8 @@ type JUMP_RESULT_STRC = {
   },
   data: any
 }
+
+
 
 
 /**
@@ -37,8 +43,8 @@ export function getFeaturedDiscountList(offset: number = 0): Promise<IGame[]>{
         limit:10,
         scene:MP_SCENE,
       }
-      const resp = (await axios.get<JUMP_RESULT_STRC>(`/switch/gameDlc/list?${queryString(payload,true)}`)).data
-      handleError(resp)
+      const resp = (await jumpAxios.get<JUMP_RESULT_STRC>(`/switch/gameDlc/list?${queryString(payload,true)}`)).data
+      handleJumpApiError(resp)
 
       const {games} = resp.data
 
@@ -63,19 +69,9 @@ export function getFeaturedDiscountList(offset: number = 0): Promise<IGame[]>{
 export function getGameDetail(appid: string): Promise<{game:IGame, prices: Array<IPrice>}>{
   return new Promise<{game:IGame, prices: Array<IPrice>}>(async (resolve,reject)=>{
     try {
-      const resp = (await axios.get<JUMP_RESULT_STRC>(`/switch/gameInfo?appid=${appid}`)).data
-      handleError(resp)
+      const resp = (await jumpAxios.get<JUMP_RESULT_STRC>(`/switch/gameInfo?appid=${appid}`)).data
+      handleJumpApiError(resp)
       const {game,prices} = resp.data
-
-      // const displayDetail = new Array<TreeItem>()
-      // displayDetail.push(new TreeItem(`介绍 - ${game.detail}`, TreeItemCollapsibleState.None))
-      // displayDetail.push(new TreeItem(`中文 - ${game.chineseVer == 1?'是': '否'}`, TreeItemCollapsibleState.None))
-      // displayDetail.push(new TreeItem(`折扣截止 - ${game.leftDiscount}`, TreeItemCollapsibleState.None))
-      // displayDetail.push(new TreeItem(`价格表`, TreeItemCollapsibleState.None))
-      
-      // prices.forEach((price:any) => {
-      //   displayDetail.push(new TreeItem(` |-${price.country} - ${price.price}RMB`))
-      // })
 
       resolve({game,prices})
     } catch (error) {
@@ -94,19 +90,10 @@ export function searchGame(keyword: string): Promise<Array<IGame>>{
   return new Promise<Array<IGame>>(async (resolve, reject)=> {
     try {
       console.log(`搜索：${keyword}`)
-      const resp = (await axios.get<JUMP_RESULT_STRC>(`/switch/gameDlc/list?title=${encodeURIComponent(keyword)}&offset=0&limit=10`)).data
-      handleError(resp)
+      const resp = (await jumpAxios.get<JUMP_RESULT_STRC>(`/switch/gameDlc/list?title=${encodeURIComponent(keyword)}&offset=0&limit=10`)).data
+      handleJumpApiError(resp)
 
       const {games} = resp.data
-      // const gameSelector = new Array<SearchItem>()
-
-      // games.forEach((game:any) => {
-      //   gameSelector.push({
-      //     label: game.titleZh,
-      //     description: game.title,
-      //     game
-      //   })
-      // })
 
       resolve(games)
     } catch (error) {
@@ -116,7 +103,39 @@ export function searchGame(keyword: string): Promise<Array<IGame>>{
   })
 }
 
-function handleError(resp: JUMP_RESULT_STRC){
+/**
+ * 获取文章列表
+ * @param page 
+ */
+export function getNewsList(page: number = 1):Promise<Array<INews>>{
+  return new Promise<Array<INews>>(async (resolve) => {
+    try {
+      const newsList = (await newsAxios.get<Array<INews>>(`/wp-json/mp/v2/posts?categories=1&page=${page}`)).data
+
+      resolve(newsList)
+    } catch (error) {
+      console.error(error)
+      resolve([])
+    }
+  })
+}
+
+/**
+ * 获取文章详情
+ * @param id 
+ */
+export function getNewsDetail(id: number):Promise<INews>{
+  return new Promise<INews>(async (resolve)=>{
+    try {
+      const news = (await newsAxios.get<INews>(`/wp-json/mp/v2/posts/${id}`)).data
+      resolve(news)
+    } catch (error) {
+      console.error(error)
+    }
+  })
+}
+
+function handleJumpApiError(resp: JUMP_RESULT_STRC){
   if(resp.result.code !== 0){
     throw new Error(JSON.stringify(resp.result))
   }
