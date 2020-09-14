@@ -8,6 +8,7 @@ import {
 } from "vscode";
 import { GameItem } from "./game-item";
 import { getFeaturedDiscountList, getGameDetail } from "./api";
+import { COMMAND } from "./command";
 
 export class FeaturedProvider implements TreeDataProvider<TreeItem> {
   gameDiscount: Array<GameItem | TreeItem> = new Array();
@@ -39,7 +40,7 @@ export class FeaturedProvider implements TreeDataProvider<TreeItem> {
       try {
         if (element) {
           // 获取详情
-          const { game, prices } = await getGameDetail(element.id);
+          const { game, prices } = await getGameDetail(element.id!);
 
           resolve(GameItem.buildTreeDetailWithGameInfo(game, prices));
         } else {
@@ -60,7 +61,7 @@ export class FeaturedProvider implements TreeDataProvider<TreeItem> {
     const more = new TreeItem(`查看更多`, TreeItemCollapsibleState.None);
     more.command = {
       title: `查看更多`,
-      command: `nsDiscount.featured.more`,
+      command: COMMAND.FEATURED_MORE,
     };
     return more;
   }

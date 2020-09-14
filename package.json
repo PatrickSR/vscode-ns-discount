@@ -2,14 +2,20 @@
   "name": "ns-discount",
   "displayName": "NS Discount",
   "description": "vscode 插件，查询Nintendo switch的游戏折扣",
-  "keywords": ["nintendo", "switch", "ns", "游戏", "任天堂"],
+  "keywords": [
+    "nintendo",
+    "switch",
+    "ns",
+    "游戏",
+    "任天堂"
+  ],
   "publisher": "PatrickSR",
   "icon": "media/nintendoswitch.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/PatrickSR/vscode-ns-discount.git"
   },
-  "version": "0.1.3",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.48.0"
   },
@@ -19,10 +25,24 @@
   "main": "./out/extension.js",
   "activationEvents": [
     "onView:featured",
-		"onView:subscribe"
+    "onView:subscribe",
+    "onView:ns-news"
   ],
   "contributes": {
     "commands": [
+      {
+        "command": "nsDiscount.news.show",
+        "title": "查看ns新闻"
+      },
+      {
+        "command": "nsDiscount.news.more",
+        "title": "查看更多ns新闻"
+      },
+      {
+        "command": "nsDiscount.news.refresh",
+        "title": "刷新ns新闻",
+        "icon": "media/refresh.svg"
+      },
       {
         "command": "nsDiscount.featured.more",
         "title": "查看更多折扣"
@@ -30,17 +50,17 @@
       {
         "command": "nsDiscount.subscribe.add",
         "title": "添加关注的游戏",
-				"icon": "media/add.svg"
-			},
+        "icon": "media/add.svg"
+      },
       {
         "command": "nsDiscount.subscribe.refresh",
         "title": "刷新关注的游戏",
-				"icon": "media/refresh.svg"
-			},
-			{
-				"command": "nsDiscount.subscribe.remove",
-				"title": "移除关注的游戏"
-			}
+        "icon": "media/refresh.svg"
+      },
+      {
+        "command": "nsDiscount.subscribe.remove",
+        "title": "移除关注的游戏"
+      }
     ],
     "viewsContainers": {
       "activitybar": [
@@ -54,6 +74,10 @@
     "views": {
       "ns-discount": [
         {
+          "id": "ns-news",
+          "name": "Switch快报"
+        },
+        {
           "id": "featured",
           "name": "折扣推荐"
         },
@@ -66,22 +90,53 @@
     "menus": {
       "view/title": [
         {
-					"command": "nsDiscount.subscribe.add",
-					"when": "view == subscribe",
-					"group": "navigation"
-				},
+          "command": "nsDiscount.subscribe.add",
+          "when": "view == subscribe",
+          "group": "navigation"
+        },
         {
-					"command": "nsDiscount.subscribe.refresh",
-					"when": "view == subscribe",
-					"group": "navigation"
-				}
-			],
-			"view/item/context": [
-				{
-					"command": "nsDiscount.subscribe.remove",
-					"when": "view == subscribe"
-				}
-			]
+          "command": "nsDiscount.subscribe.refresh",
+          "when": "view == subscribe",
+          "group": "navigation"
+        },
+        {
+          "command": "nsDiscount.news.refresh",
+          "when": "view == ns-news",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "nsDiscount.subscribe.remove",
+          "when": "view == subscribe"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "nsDiscount.news.more",
+          "when": "false"
+        },
+        {
+          "command": "nsDiscount.news.show",
+          "when": "false"
+        },
+        {
+          "command": "nsDiscount.featured.more",
+          "when": "false"
+        },
+        {
+          "command": "nsDiscount.subscribe.add",
+          "when": "false"
+        },
+        {
+          "command": "nsDiscount.subscribe.refresh",
+          "when": "false"
+        },
+        {
+          "command": "nsDiscount.subscribe.remove",
+          "when": "false"
+        }
+      ]
     }
   },
   "scripts": {

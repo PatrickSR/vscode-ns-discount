@@ -64,7 +64,7 @@ export class SubscribeProvider implements TreeDataProvider<TreeItem> {
       try {
         if(element){
           // 获取详情
-          const { game, prices } = await getGameDetail(element.id);
+          const { game, prices } = await getGameDetail(element.id!);
 
           resolve(GameItem.buildTreeDetailWithGameInfo(game, prices));
 
