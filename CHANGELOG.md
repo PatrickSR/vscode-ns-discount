@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.2.0
+⭐️ 增加switch新闻列表
+
 ## 0.1.3
 
 ⭐️ 增加manifest 的keywords

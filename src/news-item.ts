@@ -7,7 +7,7 @@ export class NewsItem extends TreeItem {
 		public readonly news: INews,
 		public readonly collapsibleState: TreeItemCollapsibleState,
 	) {
-    super(`${news.title.rendered} - ${news.time}`, collapsibleState)
+    super(`${news.title.rendered}`, collapsibleState)
     this.command = {
       title: "加载文章",
       command: COMMAND.NEWS_SHOW,

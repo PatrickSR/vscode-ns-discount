@@ -9,7 +9,6 @@ import {
   TreeItemCollapsibleState,
   TreeItem, window, ViewColumn, WebviewPanel
 } from "vscode";
-import { parse } from 'node-html-parser'
 import { getNewsList, getNewsDetail } from "./api";
 import { INews } from "./model";
 import { NewsItem } from "./news-item";
@@ -24,10 +23,14 @@ export class NewsProvider implements TreeDataProvider<NewsItem|TreeItem> {
   readonly onDidChangeTreeData: Event < NewsItem | undefined > =this._onDidChangeTreeData.event
 
   constructor(private workspaceRoot: string | undefined, private context: ExtensionContext) {
-    this.setup()
+    this.refreshNews()
   }
 
-  async setup(){
+  async refreshNews(){
+    if(this.list.length > 0){
+      this.list = []
+      this.refresh()
+    }
     const newsList = await getNewsList(this.page)
     this.list = this.list.concat(newsList)
     this.page ++
@@ -44,9 +47,14 @@ export class NewsProvider implements TreeDataProvider<NewsItem|TreeItem> {
 
           resolve([])
         }else {
-          let treeList = NewsItem.buildTreeListWithNewsList(this.list)
-          treeList = treeList.concat(this.getMoreTreeItem())
-          resolve(treeList)
+          if(this.list.length > 0){
+
+            let treeList = NewsItem.buildTreeListWithNewsList(this.list)
+            treeList = treeList.concat(this.getMoreTreeItem())
+            resolve(treeList)
+          }else {
+            resolve([new TreeItem('加载中', TreeItemCollapsibleState.None)])
+          }
         }
       } catch (error) {
         console.error(error)
@@ -56,14 +64,20 @@ export class NewsProvider implements TreeDataProvider<NewsItem|TreeItem> {
   }
 
   getMoreTreeItem(): TreeItem {
-    const more = new TreeItem(`查看更多`, TreeItemCollapsibleState.None);
+    const more = new TreeItem(`查看更多快报`, TreeItemCollapsibleState.None);
     more.command = {
-      title: `查看更多`,
+      title: `查看更多快报`,
       command: COMMAND.NEWS_MORE
     };
     return more;
   }
   
+  async loadMoreNews(){
+    const newsList = await getNewsList(this.page)
+    this.list = this.list.concat(newsList)
+    this.page ++
+    this.refresh()
+  }
 
   refresh() {
     this._onDidChangeTreeData.fire(undefined);

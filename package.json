@@ -15,7 +15,7 @@
     "type": "git",
     "url": "https://github.com/PatrickSR/vscode-ns-discount.git"
   },
-  "version": "0.1.3",
+  "version": "0.2.0",
   "engines": {
     "vscode": "^1.48.0"
   },
@@ -25,11 +25,11 @@
   "main": "./out/extension.js",
   "activationEvents": [
     "onView:featured",
-    "onView:subscribe"
+    "onView:subscribe",
+    "onView:ns-news"
   ],
   "contributes": {
     "commands": [
-      
       {
         "command": "nsDiscount.news.show",
         "title": "查看ns新闻"
@@ -37,6 +37,11 @@
       {
         "command": "nsDiscount.news.more",
         "title": "查看更多ns新闻"
+      },
+      {
+        "command": "nsDiscount.news.refresh",
+        "title": "刷新ns新闻",
+        "icon": "media/refresh.svg"
       },
       {
         "command": "nsDiscount.featured.more",
@@ -93,6 +98,11 @@
           "command": "nsDiscount.subscribe.refresh",
           "when": "view == subscribe",
           "group": "navigation"
+        },
+        {
+          "command": "nsDiscount.news.refresh",
+          "when": "view == ns-news",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
@@ -108,7 +118,7 @@
         },
         {
           "command": "nsDiscount.news.show",
-          "when": "true"
+          "when": "false"
         },
         {
           "command": "nsDiscount.featured.more",
@@ -151,7 +161,6 @@
     "vscode-test": "^1.4.0"
   },
   "dependencies": {
-    "axios": "^0.20.0",
-    "node-html-parser": "^1.2.20"
+    "axios": "^0.20.0"
   }
 }
