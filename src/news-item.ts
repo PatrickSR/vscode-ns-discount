@@ -13,11 +13,7 @@ export class NewsItem extends TreeItem {
       command: COMMAND.NEWS_SHOW,
       arguments: [news.id]
     }
-  }
-  
-  
-	get id(): string {
-		return `${this.news.id}`
+    this.id = `${this.news.id}`
   }
   
   static buildTreeListWithNewsList(news: Array<INews>): Array<TreeItem>{

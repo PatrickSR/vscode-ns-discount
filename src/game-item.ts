@@ -6,28 +6,20 @@ export class GameItem extends TreeItem {
 		public readonly game: IGame,
 		public readonly collapsibleState: TreeItemCollapsibleState,
 	) {
-		super(game.titleZh, collapsibleState);
-	}
-	
-	get id(): string {
-		return this.game.appid
-	}
+    super(game.titleZh, collapsibleState);
+    this.id = this.game.appid
+    this.tooltip = `${this.label}`
 
-	get description(): string {
+
 		let zhDiscount = undefined
 		if(this.game.cutoff){
 			const x = 100 - Number(this.game.cutoff)
 			zhDiscount = (x/10).toFixed(1)
 		}
+		this.description = `${this.game.title? this.game.title : this.game.titleZh} ${zhDiscount ?`【${zhDiscount}折】`:''}`
 
-
-		return `${this.game.title? this.game.title : this.game.titleZh} ${zhDiscount ?`【${zhDiscount}折】`:''}`
-	}
-
-  get tooltip(): string {
-		return `${this.label}`;
-	}
-
+  }
+  
 	static buildTreeListWithGameList(games: Array<IGame>): Array<TreeItem>{
     const list = new Array<TreeItem>();
     games.forEach((game: IGame) => {

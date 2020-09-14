@@ -46,6 +46,7 @@ export interface IPrice {
 export interface INews {
   id: number
   time: string
+  date: string
   title: {
     rendered: string
   }

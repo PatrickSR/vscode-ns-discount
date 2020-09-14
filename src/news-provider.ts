@@ -7,7 +7,7 @@ import {
   TextDocumentContentProvider,
   Uri,
   TreeItemCollapsibleState,
-  TreeItem,
+  TreeItem, window, ViewColumn, WebviewPanel
 } from "vscode";
 import { parse } from 'node-html-parser'
 import { getNewsList, getNewsDetail } from "./api";
@@ -72,62 +72,71 @@ export class NewsProvider implements TreeDataProvider<NewsItem|TreeItem> {
 
 export const NEWS_SCHEME = "ns-news"
 
-export class NewsDetailProvider implements TextDocumentContentProvider{
-  
-  parseNewsContent(news:INews): string{
-    if(!news.content || !news.content.rendered) return ''
-    let content = ``
-    const root = parse(news.content.rendered)
-    const pArray = root.querySelectorAll('P')
-    content += 'const content = `'
-    this.addLine()
-    pArray.forEach(p => {
-      content += p.innerHTML
-      content += '\n\n'
-    })
-    content += '`'
-    return content
+export class NewsDetailProvider {
+  plane:WebviewPanel|undefined
+  createDetailWebViewWithDelegate(){
+    return (newsId:number)=> {
+      this.preSetupArticle(newsId)
+    }
   }
 
-  parseNewsTitle(news:INews): string {
-    return `const title = '${news.title.rendered}'`
+  preSetupArticle(newsId:number){
+    if(!this.plane){
+      this.plane = window.createWebviewPanel('ns-news', '加载中', ViewColumn.Active,{})
+    }
+    this.plane.webview.html = `<p>加载中</p>`
+    this.setupArticle(newsId)
   }
 
-  parseNewsDate(news:INews): string {
-    return `const date = '${news.time}'`
+  async setupArticle(newsId:number){
+    const news = await getNewsDetail(newsId)
+    news.content!.rendered = news.content!.rendered.replace(/\<br \/\>/g, '')
+    this.plane!.title = news.title.rendered
+    this.plane!.webview.html = this.getArticleHtml(news)
   }
 
-  parseOrigin(news:INews): string {
-    return `const web = '${news.link}'`
-  }
-  
-  addLine():string {
-    return '\n\n'
-  }
-  parseNews(news: INews):string{
-    let article = ''
-    article += this.parseNewsTitle(news)
-    article += this.addLine()
-    article += this.parseNewsDate(news)
-    article += this.addLine()
-    article += this.parseNewsContent(news)
-    article += this.addLine()
-    article += this.parseOrigin(news)
-    return article
-  }
+  getArticleHtml(news:INews){
+    return `
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          p {
+            width: 500px;
+            font-size: 14px !important;
+            line-height: 26px !important;
+          }
 
-  provideTextDocumentContent(uri: Uri): ProviderResult<string> {
-    return new Promise<string>(async (resolve)=> {
-      // try {
-      // } catch (error) {
-        
-      // }
-      const r = uri.path.split('.')
-      const newsId = Number(r[0])
+          img {
+            width: 500px;
+            height: 282px;
+            object-fit: cover;
+          }
 
-      const news = await getNewsDetail(newsId)
-      const finalContent = this.parseNews(news)
-      resolve(finalContent)
-    })
+          .title {
+            font-size: 18px !important;
+            margin: 10px 0px
+          }
+
+          .extra {
+            color: #ccc !important;
+          }
+        </style>
+      </head>
+      <div style="width: 500px">
+        <div class="title">
+          ${news.title.rendered}
+        </div>
+
+        <div class="extra">
+          ${news.date}
+        </div>
+        <div class="content">
+          ${news.content!.rendered}
+        </div>
+      </div>
+    </html>
+  `
   }
 }

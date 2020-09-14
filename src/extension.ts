@@ -26,19 +26,14 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerTreeDataProvider("ns-news",newsProvider)
 
 
-    vscode.workspace.registerTextDocumentContentProvider(
-      NEWS_SCHEME,
-      new NewsDetailProvider()
-    );
-
+    // vscode.workspace.registerTextDocumentContentProvider(
+    //   NEWS_SCHEME,
+    //   new NewsDetailProvider()
+    // );
+    const newsDetailProvider = new NewsDetailProvider()
     const previewNews = vscode.commands.registerCommand(
       COMMAND.NEWS_SHOW,
-      async (newsId) => {
-        let uri = vscode.Uri.parse(`${NEWS_SCHEME}:${newsId}.ts`);
-
-        let doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
-        await vscode.window.showTextDocument(doc, { preview: false,  });
-      }
+      newsDetailProvider.createDetailWebViewWithDelegate()
     );
 
     context.subscriptions.push(previewNews);

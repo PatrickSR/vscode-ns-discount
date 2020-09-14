@@ -29,6 +29,7 @@
   ],
   "contributes": {
     "commands": [
+      
       {
         "command": "nsDiscount.news.show",
         "title": "查看ns新闻"
@@ -107,7 +108,7 @@
         },
         {
           "command": "nsDiscount.news.show",
-          "when": "false"
+          "when": "true"
         },
         {
           "command": "nsDiscount.featured.more",
