@@ -87,7 +87,6 @@ export class NewsProvider implements TreeDataProvider<NewsItem|TreeItem> {
 export const NEWS_SCHEME = "ns-news"
 
 export class NewsDetailProvider {
-  plane:WebviewPanel|undefined
   createDetailWebViewWithDelegate(){
     return (newsId:number)=> {
       this.preSetupArticle(newsId)
@@ -95,18 +94,17 @@ export class NewsDetailProvider {
   }
 
   preSetupArticle(newsId:number){
-    if(!this.plane){
-      this.plane = window.createWebviewPanel('ns-news', '加载中', ViewColumn.Active,{})
-    }
-    this.plane.webview.html = `<p>加载中</p>`
-    this.setupArticle(newsId)
+    const plane = window.createWebviewPanel('ns-news', '加载中', ViewColumn.Active,{})
+    
+    plane.webview.html = `<p>加载中</p>`
+    this.setupArticle(newsId, plane)
   }
 
-  async setupArticle(newsId:number){
+  async setupArticle(newsId:number, plane: WebviewPanel){
     const news = await getNewsDetail(newsId)
     news.content!.rendered = news.content!.rendered.replace(/\<br \/\>/g, '')
-    this.plane!.title = news.title.rendered
-    this.plane!.webview.html = this.getArticleHtml(news)
+    plane!.title = news.title.rendered
+    plane!.webview.html = this.getArticleHtml(news)
   }
 
   getArticleHtml(news:INews){
