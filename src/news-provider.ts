@@ -29,6 +29,7 @@ export class NewsProvider implements TreeDataProvider<NewsItem|TreeItem> {
   async refreshNews(){
     if(this.list.length > 0){
       this.list = []
+      this.page = 1
       this.refresh()
     }
     const newsList = await getNewsList(this.page)
