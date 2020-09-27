@@ -32,14 +32,13 @@ export class GameItem extends TreeItem {
   static buildTreeDetailWithGameInfo(game:IGame, prices: Array<IPrice>): Array<TreeItem>{
 
     const displayDetail = new Array<TreeItem>()
-    const detailTreeItem = new TreeItem(`查看详情`, TreeItemCollapsibleState.None)
+    const detailTreeItem = new TreeItem(`🔍 查看详情`, TreeItemCollapsibleState.None)
     detailTreeItem.command = {
       title: '详情',
       command: COMMAND.GAME_VIEW,
       arguments: [game.appid]
     }
     displayDetail.push(detailTreeItem)
-    displayDetail.push(new TreeItem(`中文 - ${game.chineseVer == 1?'是': '否'}`, TreeItemCollapsibleState.None))
     game.leftDiscount && displayDetail.push(new TreeItem(`折扣截止 - ${game.leftDiscount}`, TreeItemCollapsibleState.None))
     displayDetail.push(new TreeItem(`价格表`, TreeItemCollapsibleState.None))
 

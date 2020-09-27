@@ -38,13 +38,16 @@ export class GameviewProvider {
 
     function chineseSupportView(game:IGame){
       if(game.chinese_all){
-        return `<span>🇨🇳 全区</span>`
+        return `<span>🇨🇳  全区</span>`
       }else {
         let supportHmtl = ''
-        if(game.chinese_america) supportHmtl+= '<span>🇺🇸 美区</span>'
-        if(game.chinese_europe) supportHmtl+= '<span>🇬🇧 欧区</span>'
-        if(game.chinese_hongkong) supportHmtl+= '<span>🇭🇰 港区</span>'
-        if(game.chinese_japan) supportHmtl+= '<span>🇯🇵 日区</span>'
+        if(game.chinese_america) supportHmtl+= '<span>🇺🇸  美区</span>'
+        if(game.chinese_europe) supportHmtl+= '<span>🇬🇧  欧区</span>'
+        if(game.chinese_hongkong) supportHmtl+= '<span>🇭🇰  港区</span>'
+        if(game.chinese_japan) supportHmtl+= '<span>🇯🇵  日区</span>'
+
+
+        if(!supportHmtl) supportHmtl+='<span>🤷‍♂️  不支持中文</span>'
         return supportHmtl
       }
     }
@@ -74,7 +77,6 @@ export class GameviewProvider {
             padding: 0;
             margin: 0;
             width: 400px;
-            background: #1e1e1e;
           }
 
           .game-cover{
@@ -95,7 +97,6 @@ export class GameviewProvider {
           .title-wrapper .zh-title {
             font-size: 22px;
             font-weight: bold;
-            color: white;
           }
     
           .title-wrapper .origin-title {
@@ -105,7 +106,6 @@ export class GameviewProvider {
     
           .label {
             font-size: 18px;
-            color: white;
             margin-bottom: 5px;
           }
     
