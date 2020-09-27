@@ -18,8 +18,25 @@ export interface IGame {
   // 介绍
   detail?: string
 
+  // 描述
+  brief: string
+
   // 离折扣结束剩余天数
   leftDiscount: string
+
+  // 游戏相关图片
+  pics: Array<string>
+
+  // 港区是否支持中文
+  chinese_hongkong?: 1|0
+  // 美区是否支持中文
+  chinese_america?: 1|0
+  // 欧区是否支持中文
+  chinese_europe?: 1|0
+  // 日区是否支持中文
+  chinese_japan?: 1|0
+  // 全区是否支持中文
+  chinese_all?: 1|0
 }
 
 

@@ -8,6 +8,7 @@ import { SearchItem, buildQuickPickListWithSearch } from "./search-item";
 import { GameItem } from "./game-item";
 import { NEWS_SCHEME, NewsDetailProvider, NewsProvider } from "./news-provider";
 import { COMMAND } from "./command";
+import { GameviewProvider } from "./gameview-provider";
 
 let searchTimeout: NodeJS.Timeout | undefined = undefined;
 
@@ -26,12 +27,18 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.registerTreeDataProvider("ns-news",newsProvider)
 
     const newsDetailProvider = new NewsDetailProvider()
-    const previewNews = vscode.commands.registerCommand(
+    vscode.commands.registerCommand(
       COMMAND.NEWS_SHOW,
       newsDetailProvider.createDetailWebViewWithDelegate()
     );
 
     
+    const gameviewProvider = new GameviewProvider()
+    vscode.commands.registerCommand(
+      COMMAND.GAME_VIEW,
+      gameviewProvider.createGameviewWebviewWithDelegate()
+    );
+
     // 加载更多折扣游戏
     const featuredMore = vscode.commands.registerCommand(
       COMMAND.FEATURED_MORE,
@@ -94,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
           
           context.subscriptions.push(newsRefresh)
           context.subscriptions.push(newsMore)
-          context.subscriptions.push(previewNews);
+          // context.subscriptions.push(previewNews);
           context.subscriptions.push(featuredMore);
           context.subscriptions.push(addWishGame);
           context.subscriptions.push(removeWishGame);

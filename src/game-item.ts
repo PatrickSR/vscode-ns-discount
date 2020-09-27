@@ -1,4 +1,5 @@
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { COMMAND } from "./command";
 import { IGame, IPrice } from "./model";
 
 export class GameItem extends TreeItem {
@@ -17,7 +18,7 @@ export class GameItem extends TreeItem {
 			zhDiscount = (x/10).toFixed(1)
 		}
 		this.description = `${this.game.title? this.game.title : this.game.titleZh} ${zhDiscount ?`【${zhDiscount}折】`:''}`
-
+    
   }
   
 	static buildTreeListWithGameList(games: Array<IGame>): Array<TreeItem>{
@@ -31,7 +32,13 @@ export class GameItem extends TreeItem {
   static buildTreeDetailWithGameInfo(game:IGame, prices: Array<IPrice>): Array<TreeItem>{
 
     const displayDetail = new Array<TreeItem>()
-    game.detail && displayDetail.push(new TreeItem(`介绍 - ${game.detail}`, TreeItemCollapsibleState.None))
+    const detailTreeItem = new TreeItem(`查看详情`, TreeItemCollapsibleState.None)
+    detailTreeItem.command = {
+      title: '详情',
+      command: COMMAND.GAME_VIEW,
+      arguments: [game.appid]
+    }
+    displayDetail.push(detailTreeItem)
     displayDetail.push(new TreeItem(`中文 - ${game.chineseVer == 1?'是': '否'}`, TreeItemCollapsibleState.None))
     game.leftDiscount && displayDetail.push(new TreeItem(`折扣截止 - ${game.leftDiscount}`, TreeItemCollapsibleState.None))
     displayDetail.push(new TreeItem(`价格表`, TreeItemCollapsibleState.None))

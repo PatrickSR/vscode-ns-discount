@@ -5,5 +5,6 @@ export enum COMMAND {
   FEATURED_MORE = "nsDiscount.featured.more",
   SUBSCRIBE_ADD = "nsDiscount.subscribe.add",
   SUBSCRIBE_REMOVE = "nsDiscount.subscribe.remove",
-  SUBSCRIBE_REFRESH = "nsDiscount.subscribe.refresh"
+  SUBSCRIBE_REFRESH = "nsDiscount.subscribe.refresh",
+  GAME_VIEW = 'nsDiscount.game.view'
 }

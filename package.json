@@ -60,6 +60,10 @@
       {
         "command": "nsDiscount.subscribe.remove",
         "title": "移除关注的游戏"
+      }, 
+      {
+        "command": "nsDiscount.game.view",
+        "title": "查看ns游戏"
       }
     ],
     "viewsContainers": {
@@ -134,6 +138,10 @@
         },
         {
           "command": "nsDiscount.subscribe.remove",
+          "when": "false"
+        },
+        {
+          "command": "nsDiscount.game.view",
           "when": "false"
         }
       ]
