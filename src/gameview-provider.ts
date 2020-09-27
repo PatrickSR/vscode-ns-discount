@@ -86,7 +86,7 @@ export class GameviewProvider {
           .game-cover img {
             object-fit: cover;
             width: 100%;
-            height: 160px;
+            height: 225px;
           }
     
           .title-wrapper {
