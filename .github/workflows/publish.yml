@@ -1,10 +1,7 @@
-name: develop-build
-
+name: publish
 on:
   push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
+    branches: [ master ]
 
 jobs:
   build:
@@ -19,7 +16,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: run npm install
+      - name: npm install with cache
         uses: bahmutov/npm-install@v1.1.0
-      - run: npm run pretest
-      - run: npm run test
+      - run: vscode:prepublish
+      - uses: lannonbr/vsce-action@master
+        with:
+          args: "publish -p $VSCE_TOKEN"
+        env:
+          VSCE_TOKEN: ${{ secrets.AZURE_TOKEN }}
