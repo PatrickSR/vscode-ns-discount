@@ -36,5 +36,5 @@ jobs:
       - name: upload vsix
         uses: actions/upload-artifact@v2
         with:
-          name: ns-dscount-${{steps.package-version.outputs.current-version}}
+          name: ns-dscount-${{steps.package-version.outputs.current-version}}.vsix
           path: ns-discount.vsix
