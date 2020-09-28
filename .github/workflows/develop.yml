@@ -15,11 +15,26 @@ jobs:
         node-version: [12.x]
     steps:
       - uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+
       - name: run npm install
         uses: bahmutov/npm-install@v1.1.0
-      - run: npm run pretest
-      - run: npm run test
+
+      - name: build vsix
+        uses: lannonbr/vsce-action@master
+        with:
+          args: "package -o ns-discount.vsix"
+
+      - name: upload vsix
+        uses: actions/upload-artifact@v2
+        with:
+          name: ns-dscount-${{steps.package-version.outputs.current-version}}
+          path: ns-discount.vsix
