@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.3.1
+⭐️ 更新Readme，增加演示性的gif
+🐛 修复侧边栏文字switch缺少"h"的问题
+
 ## 0.3.0
 ⭐️ 增加switch游戏详情预览
 
