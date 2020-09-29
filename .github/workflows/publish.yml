@@ -19,7 +19,7 @@ jobs:
       - name: npm install with cache
         uses: bahmutov/npm-install@v1.1.0
 
-      - run: vscode:prepublish
+      - run: npm run vscode:prepublish
       
       - uses: lannonbr/vsce-action@master
         with:
