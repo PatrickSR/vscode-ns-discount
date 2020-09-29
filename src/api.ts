@@ -11,7 +11,7 @@ const newsAxios = Axios.create({
   baseURL: 'https://www.ninten.cn'
 })
 
-type JUMP_RESULT_STRC = {
+type JumpResultStrc = {
   result: {
     code: number
   },
@@ -43,7 +43,7 @@ export function getFeaturedDiscountList(offset: number = 0): Promise<IGame[]>{
         limit:10,
         scene:MP_SCENE,
       }
-      const resp = (await jumpAxios.get<JUMP_RESULT_STRC>(`/switch/gameDlc/list?${queryString(payload,true)}`)).data
+      const resp = (await jumpAxios.get<JumpResultStrc>(`/switch/gameDlc/list?${queryString(payload,true)}`)).data
       handleJumpApiError(resp)
 
       const {games} = resp.data
@@ -69,7 +69,7 @@ export function getFeaturedDiscountList(offset: number = 0): Promise<IGame[]>{
 export function getGameDetail(appid: string): Promise<{game:IGame, prices: Array<IPrice>}>{
   return new Promise<{game:IGame, prices: Array<IPrice>}>(async (resolve,reject)=>{
     try {
-      const resp = (await jumpAxios.get<JUMP_RESULT_STRC>(`/switch/gameInfo?appid=${appid}`)).data
+      const resp = (await jumpAxios.get<JumpResultStrc>(`/switch/gameInfo?appid=${appid}`)).data
       handleJumpApiError(resp)
       const {game,prices} = resp.data
 
@@ -90,7 +90,7 @@ export function searchGame(keyword: string): Promise<Array<IGame>>{
   return new Promise<Array<IGame>>(async (resolve, reject)=> {
     try {
       console.log(`搜索：${keyword}`)
-      const resp = (await jumpAxios.get<JUMP_RESULT_STRC>(`/switch/gameDlc/list?title=${encodeURIComponent(keyword)}&offset=0&limit=10`)).data
+      const resp = (await jumpAxios.get<JumpResultStrc>(`/switch/gameDlc/list?title=${encodeURIComponent(keyword)}&offset=0&limit=10`)).data
       handleJumpApiError(resp)
 
       const {games} = resp.data
@@ -135,7 +135,7 @@ export function getNewsDetail(id: number):Promise<INews>{
   })
 }
 
-function handleJumpApiError(resp: JUMP_RESULT_STRC){
+function handleJumpApiError(resp: JumpResultStrc){
   if(resp.result.code !== 0){
     throw new Error(JSON.stringify(resp.result))
   }
@@ -146,7 +146,9 @@ function queryString(param: any, encode: boolean = true) {
     .map(key => {
       let value =
         typeof param[key] === 'object' ? JSON.stringify(param[key]) : param[key]
-      if (encode) value = encodeURIComponent(value)
+      if (encode) {
+        value = encodeURIComponent(value)
+      }
       return `${key}=${value}`
     })
     .join('&')

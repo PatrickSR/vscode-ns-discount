@@ -9,6 +9,7 @@ import {
   TreeItemCollapsibleState,
   TreeItem, window, ViewColumn, WebviewPanel
 } from "vscode";
+import {uniqBy} from 'lodash'
 import { getNewsList, getNewsDetail } from "./api";
 import { INews } from "./model";
 import { NewsItem } from "./news-item";
@@ -75,8 +76,9 @@ export class NewsProvider implements TreeDataProvider<NewsItem|TreeItem> {
   
   async loadMoreNews(){
     const newsList = await getNewsList(this.page)
-    this.list = this.list.concat(newsList)
-    this.page ++
+    this.list = uniqBy(this.list.concat(newsList), 'id')
+    
+    this.page++
     this.refresh()
   }
 
