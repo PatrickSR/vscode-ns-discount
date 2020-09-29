@@ -18,7 +18,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm install with cache
         uses: bahmutov/npm-install@v1.1.0
+
       - run: vscode:prepublish
+      
       - uses: lannonbr/vsce-action@master
         with:
           args: "publish -p $VSCE_TOKEN"
